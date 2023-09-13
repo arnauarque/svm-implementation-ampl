@@ -1,0 +1,38 @@
+data; 
+
+# ----------------------------------------------------------
+# -- Train
+# ----------------------------------------------------------
+
+# Setting numerical parameters
+read n, d < './data/auxtrain.txt';
+let nu := num($NU);
+
+# Reading dataset 
+read {i in 1..n, j in 1..d+1} df[i,j] < './data/auxtrain.txt';
+
+# Filling data (x) and labels (y)
+for {i in 1..n} {
+	for {j in 1..d} {
+		let x[i,j] := df[i,j];
+	}
+	let y[i] := df[i,d+1];
+}
+
+# ----------------------------------------------------------
+# -- Test
+# ----------------------------------------------------------
+
+# Setting numerical parameters
+read n_test < './data/auxtest.txt';
+
+# Reading dataset 
+read {i in 1..n_test, j in 1..d+1} df_test[i,j] < './data/auxtest.txt';
+
+# Filling data (x) and labels (y)
+for {i in 1..n_test} {
+	for {j in 1..d} {
+		let x_test[i,j] := df_test[i,j];
+	}
+	let y_test[i] := df_test[i,d+1];
+}

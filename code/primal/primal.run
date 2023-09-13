@@ -1,0 +1,85 @@
+reset;
+
+# ----------------------------------------------------------
+# -- Loading model, data and running model
+# ----------------------------------------------------------
+
+# Loading model
+model './primal/primal.mod';
+
+# Definition of the params and variables
+param n_test;
+var df {1..n, 1..d+1};
+var df_test {1..n_test, 1..d+1};
+var x_test {1..n_test, 1..d};
+var y_test {1..n_test};
+
+# Loading data
+data './data/data.dat';
+
+# Showing model
+#show;
+#expand;
+
+# Solving
+option solver '../../ampl_macos64/cplex';
+solve;
+
+# ----------------------------------------------------------
+# -- Computing hyperplane: <w,x> + gamma = 0
+# ----------------------------------------------------------
+
+# The computation is immediate since the solver provides
+# 'w' and 'gamma'.
+
+# ----------------------------------------------------------
+# -- Training accuracy
+# ----------------------------------------------------------
+
+var pred_train {i in 1..n} =
+	if (sum {j in 1..d} w[j]*x[i,j]) + gamma >= 0
+	then 1
+	else -1;
+
+var tr_counts;
+for {i in 1..n} {
+	if y[i] == pred_train[i] then {let tr_counts := tr_counts + 1;}
+}
+var tr_acc = tr_counts/n;
+
+# ----------------------------------------------------------
+# -- Testing accuracy
+# ----------------------------------------------------------
+
+var pred_test {i in 1..n_test} =
+	if (sum {j in 1..d} w[j]*x_test[i,j]) + gamma >= 0
+	then 1 
+	else -1;
+
+var te_counts;
+for {i in 1..n_test} {
+	if y_test[i] == pred_test[i] then {let te_counts := te_counts + 1;}
+}
+var te_acc = te_counts/n_test;
+
+# ----------------------------------------------------------
+# -- Showing results
+# ----------------------------------------------------------
+
+# nu used
+printf "\nnu = %.4f\n", nu; 
+
+# Hyperplane
+printf "ws = "; printf {i in 1..d} "%.5f ", w[i]; printf "\n";
+printf "gamma = %.5f\n",  gamma; 
+
+# Training accuracy
+printf "pred_train = "; printf {i in 1..n} "%d ", pred_train[i]; printf "\n";
+printf "tr_acc = %.2f\n", tr_acc; 
+
+# Testing accuracy
+printf "pred_test = "; printf {i in 1..n_test} "%d ", pred_test[i]; printf "\n";
+printf "te_acc = %.2f\n", te_acc;
+
+# alphas
+printf "s = "; printf {i in 1..n} "%.6f ", s[i]; printf "\n";

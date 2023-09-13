@@ -1,0 +1,21 @@
+------------------------------------------------
+-- OTDM Laboratory 2 script
+-- Authors: Arnau Arqué and Daniel Esquina
+------------------------------------------------
+-- Script to run SVMs with different data
+-- and parametrizations
+------------------------------------------------
+
+Loading data...
+Preprocessing synthetic dataset...
+Preprocessing synthetic dataset...
+Running SVM...
+Retrieving results...
+
+[ RESULTS ]
+	nu = 30
+	hyperplane: 4.05048*x1 + 4.27696*x2 + 5.15461*x3 + 5.26113*x4 - 9.26190 = 0
+	tr_acc = 0.94
+	te_acc = 0.9
+
+Execution time: 0.03 secs.
